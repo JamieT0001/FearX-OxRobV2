@@ -285,7 +285,8 @@ local function StartRobbery(targetId)
     end
     
     StopAnimTask(playerPed, animData.dict, animData.anim, 1.0)
-    exports.ox_inventory:openNearbyInventory()
+
+    TriggerServerEvent('fearx-oxrob:server:openRobInventory', targetId)
 end
 
 local function HandsUpCommand()

@@ -298,6 +298,35 @@ RegisterNetEvent('fearx-oxrob:server:startRob', function(targetId)
     TriggerClientEvent('fearx-oxrob:client:beingRobbed', targetId)
 end)
 
+
+RegisterNetEvent('fearx-oxrob:server:openRobInventory', function(targetId)
+    local src = source
+    local robberyData = activeRobberies[src]
+
+    if not robberyData or robberyData.target ~= targetId then
+        TriggerClientEvent('fearx-oxrob:client:notify', src, 'rob_cancelled', 'error')
+        return
+    end
+
+    if not ValidateRobbery(src, targetId) then
+        activeRobberies[src] = nil
+        return
+    end
+
+    if GetResourceState('ox_inventory') ~= 'started' then
+        TriggerClientEvent('fearx-oxrob:client:notify', src, 'Inventory system unavailable', 'error')
+        return
+    end
+
+    local success = exports.ox_inventory:forceOpenInventory(src, 'player', targetId)
+    if not success then
+        TriggerClientEvent('fearx-oxrob:client:notify', src, 'You cannot open inventory', 'error')
+        return
+    end
+
+    activeRobberies[src] = nil
+end)
+
 RegisterNetEvent('fearx-oxrob:server:cancelRob', function(targetId)
     activeRobberies[source] = nil
 end)
