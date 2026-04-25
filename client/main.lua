@@ -285,7 +285,12 @@ local function StartRobbery(targetId)
     end
     
     StopAnimTask(playerPed, animData.dict, animData.anim, 1.0)
-    exports.ox_inventory:openNearbyInventory()
+
+    local opened = exports.ox_inventory:openNearbyInventory()
+    if opened == false then
+        -- Fallback to explicit target inventory open to avoid ox_inventory command-state restrictions.
+        exports.ox_inventory:openInventory('player', targetId)
+    end
 end
 
 local function HandsUpCommand()
